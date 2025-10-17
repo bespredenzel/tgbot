@@ -1,11 +1,17 @@
 services:
   - type: web
+    name: price-monitor-app
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+  - type: worker
     name: price-monitor-bot
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python app.py & python telegram_bot.py
+    startCommand: python telegram_bot.py
     envVars:
       - key: BOT_TOKEN
         value: 8466699669:AAFkayv3f9JQmkNJsrvXV32oFMmkWlIMTCc
-      - key: FLASK_ENV
-        value: production
