@@ -67,6 +67,8 @@ def get_product_price(product_url, user_id=None):
         
         # Пробуем разные методы получения данных
         methods = [
+            try_selenium_method,  # Начинаем с Selenium (самый надежный)
+            try_with_proxy,       # Пробуем через прокси
             try_direct_method,
             try_search_method,
             try_mobile_version
@@ -90,92 +92,26 @@ def get_product_price(product_url, user_id=None):
                         return {
                             "price": f"{price} руб.",
                             "name": product_name,
-                            "source": user_id or "ozon"
+                            "source": user_id or "mobile"
                         }
                 else:
                     result = method(product_url)
-                    if result and isinstance(result, dict) and result.get("price") and "error" not in result["price"].lower():
+                    if result and isinstance(result, dict) and result.get("price") and "error" not in result["price"].lower() and "не найдена" not in result["price"].lower():
                         return {
                             "price": result["price"],
                             "name": result["name"],
-                            "source": user_id or "ozon"
+                            "source": user_id or result.get("source", "parsed")
                         }
             except Exception as e:
+                print(f"Ошибка метода {method.__name__}: {e}")
                 continue
         
-        # Если все методы не сработали, используем реальные данные
-        # В реальном проекте здесь будет работающий парсинг
-        import random
-        
-        # Реальные данные товаров (на основе предоставленной информации)
-        real_products = {
-            "146215073": {
-                "name": "Молоко питьевое ультрапастеризованное 3,2% 950 г, Село Зеленое",
-                "price": 99
-            },
-            "33069284": {
-                "name": "Хлеб бородинский нарезной 500г",
-                "price": 45
-            },
-            "123456789": {
-                "name": "Йогурт питьевой Активия натуральный 290мл",
-                "price": 67
-            },
-            "987654321": {
-                "name": "Сыр российский 45% 200г",
-                "price": 156
-            },
-            "555666777": {
-                "name": "Масло сливочное крестьянское 82,5% 200г",
-                "price": 89
-            },
-            "111222333": {
-                "name": "Кефир 1% 500мл",
-                "price": 34
-            },
-            "444555666": {
-                "name": "Творог 5% 200г",
-                "price": 78
-            },
-            "777888999": {
-                "name": "Сметана 20% 200г",
-                "price": 52
-            }
-        }
-        
-        # Проверяем, есть ли реальные данные для этого артикула
-        if article in real_products:
-            product_data = real_products[article]
-            return {
-                "price": f"{product_data['price']} руб.",
-                "name": product_data['name'],
-                "source": user_id or "ozon"
-            }
-        
-        # Если артикул не найден в реальных данных, генерируем на основе артикула
-        fallback_names = [
-            "Молоко питьевое ультрапастеризованное 3,2% 950 г, Село Зеленое",
-            "Хлеб бородинский нарезной 500г",
-            "Йогурт питьевой Активия натуральный 290мл",
-            "Сыр российский 45% 200г",
-            "Масло сливочное крестьянское 82,5% 200г",
-            "Кефир 1% 500мл",
-            "Творог 5% 200г",
-            "Сметана 20% 200г"
-        ]
-        
-        # Выбираем название на основе артикула для консистентности
-        name_index = int(article) % len(fallback_names)
-        product_name = fallback_names[name_index]
-        
-        # Генерируем реалистичную цену
-        base_price = 30 + (int(article) % 150) * 5  # От 30 до 780 рублей
-        price = base_price + random.randint(-10, 10)  # Добавляем небольшую вариацию
-        
+        # Если все методы не сработали, возвращаем ошибку
+        print(f"Все методы парсинга не сработали для артикула {article}")
         return {
-            "price": f"{price} руб.",
-            "name": product_name,
-            "source": user_id or "ozon"
+            "price": "Цена не найдена",
+            "name": f"Товар {article}",
+            "source": user_id or "error"
         }
         
     except Exception as e:
@@ -194,13 +130,31 @@ def try_direct_method(product_url):
         article = article_match.group(1)
         
         session = requests.Session()
+        
+        # Более реалистичные заголовки для обхода защиты
         headers = {
-            'User-Agent': get_random_user_agent(),
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8',
-            'Referer': 'https://www.ozon.ru/'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+            'Sec-Ch-Ua-Mobile': '?0',
+            'Sec-Ch-Ua-Platform': '"Windows"',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1',
+            'Upgrade-Insecure-Requests': '1',
+            'Referer': 'https://www.ozon.ru/',
+            'Connection': 'keep-alive'
         }
         session.headers.update(headers)
+        
+        # Добавляем задержку перед запросом
+        import time
+        time.sleep(1)
         
         response = session.get(product_url, timeout=15)
         response.raise_for_status()
@@ -477,14 +431,28 @@ def try_with_proxy(product_url):
             try:
                 session = requests.Session()
                 headers = {
-                    'User-Agent': get_random_user_agent(),
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                    'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+                    'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
                     'Accept-Encoding': 'gzip, deflate, br',
-                    'Connection': 'keep-alive',
-                    'Upgrade-Insecure-Requests': '1'
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
+                    'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+                    'Sec-Ch-Ua-Mobile': '?0',
+                    'Sec-Ch-Ua-Platform': '"Windows"',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'none',
+                    'Sec-Fetch-User': '?1',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Referer': 'https://www.ozon.ru/',
+                    'Connection': 'keep-alive'
                 }
                 session.headers.update(headers)
+                
+                # Добавляем задержку перед запросом
+                import time
+                time.sleep(2)
                 
                 # Пробуем через прокси
                 response = session.get(product_url, proxies=proxy, timeout=10)
@@ -720,6 +688,8 @@ def try_selenium_method(product_url):
                     name_element = driver.find_element(By.CSS_SELECTOR, selector)
                     if name_element and name_element.text.strip():
                         product_name = name_element.text.strip()
+                        # Очищаем от невидимых символов
+                        product_name = re.sub(r'[\u2009\u200a\u200b\u200c\u200d\u200e\u200f]', '', product_name)
                         break
                 except:
                     continue
@@ -743,7 +713,7 @@ def try_selenium_method(product_url):
                         price_match = re.search(r'[\d\s,]+', price_text)
                         if price_match:
                             price = price_match.group().strip()
-                            return {"price": f"{price} ₽", "name": product_name, "source": "Selenium"}
+                            return {"price": f"{price} руб.", "name": product_name, "source": "Selenium"}
                 except:
                     continue
             
