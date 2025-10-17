@@ -1226,6 +1226,66 @@ def force_update_price_api(article):
         'status': 'success'
     })
 
+@app.route('/api/search-article', methods=['POST'])
+def search_article():
+    """Поиск товара по артикулу и добавление в базу данных"""
+    try:
+        data = request.get_json()
+        article = data.get('article', '').strip()
+        user_id = data.get('user_id', 'anonymous')
+        
+        if not article:
+            return jsonify({'error': 'Артикул не указан'}), 400
+        
+        # Формируем URL товара
+        product_url = f"https://www.ozon.ru/product/{article}/"
+        
+        # Получаем информацию о товаре
+        product_info = get_product_price(product_url)
+        
+        if not product_info:
+            return jsonify({'error': 'Товар не найден'}), 404
+        
+        # Извлекаем данные
+        price_str = product_info.get('price', '0 руб.')
+        product_name = product_info.get('name', f'Товар {article}')
+        source = product_info.get('source', 'demo')
+        
+        # Извлекаем числовое значение цены
+        price_match = re.search(r'([\d\s,]+)\s*руб\.', price_str)
+        price = price_match.group(1).strip() if price_match else "0"
+        
+        # Добавляем в базу данных
+        sku_id = add_or_update_sku(
+            article=article,
+            product_name=product_name,
+            current_price=price,
+            price_source=source,
+            product_url=product_url
+        )
+        
+        # Сохраняем ежедневную цену
+        if sku_id:
+            add_daily_price(sku_id, price, source)
+        
+        # Связываем с пользователем
+        if sku_id and user_id != 'anonymous':
+            add_user_sku(user_id, sku_id)
+        
+        return jsonify({
+            'success': True,
+            'article': article,
+            'product_name': product_name,
+            'price': f"{price} руб.",
+            'source': source,
+            'product_url': product_url,
+            'added_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'sku_id': sku_id
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Ошибка при поиске: {str(e)}'}), 500
+
 if __name__ == "__main__":
     # Запуск на 0.0.0.0 для доступа с внешних устройств
     app.run(host="0.0.0.0", port=5000, debug=False)
