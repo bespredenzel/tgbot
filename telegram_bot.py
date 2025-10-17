@@ -1,5 +1,6 @@
 import logging
 import random
+import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram import WebAppInfo
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
@@ -12,7 +13,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Токен бота (замените на ваш токен от @BotFather)
-BOT_TOKEN = "8466699669:AAFkayv3f9JQmkNJsrvXV32oFMmkWlIMTCc"
+BOT_TOKEN = os.getenv("BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
 
 def generate_math_question():
     """Генерирует случайный пример из таблицы умножения"""

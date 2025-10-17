@@ -40,6 +40,12 @@ logs/
 config.env
 git_config.env
 
+# Sensitive files
+*_secret*
+*_private*
+*_token*
+*_key*
+
 # IDE
 .vscode/
 .idea/

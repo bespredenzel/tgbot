@@ -14,7 +14,7 @@
 ### 3. Настройка переменных
 В разделе Variables добавьте:
 ```
-BOT_TOKEN=8466699669:AAFkayv3f9JQmkNJsrvXV32oFMmkWlIMTCc
+BOT_TOKEN=YOUR_BOT_TOKEN_HERE
 FLASK_ENV=production
 ```
 
