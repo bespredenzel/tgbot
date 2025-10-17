@@ -1,0 +1,101 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env
+*.env
+config.env
+git_config.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# SSL certificates
+*.key
+*.crt
+*.pem
+
+# ngrok
+ngrok.exe
+ngrok
+
+# Test files
+test_*.py
+debug_*.py
+*_test.py
+
+# Setup scripts (не нужны в продакшене)
+setup_*.py
+create_*.py
+*_setup.py
+
+# Batch files
+*.bat
+
+# PowerShell scripts
+*.ps1
+
+# Documentation (оставляем только основные)
+!README.md
+!API_DOCUMENTATION.md
+!RAILWAY_DEPLOY_GUIDE.md
+!TELEGRAM_WEBAPP_SETUP.md
+!SCHEDULER_SETUP_GUIDE.md
+!CONNECTION_REFUSED_SOLUTION.md
+!DAILY_UPDATE_GUIDE.md
+!HTTPS_SERVER_READY.md
+
+# Heroku files (не нужны для Railway)
+Procfile
+app.json
+runtime.txt
+deploy.sh
+
+# VPS files
+wsgi.py
