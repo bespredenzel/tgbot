@@ -913,9 +913,14 @@ def index():
                 source = daily_price[1]
                 created_at = daily_price[2]
                 
+                # Получаем название товара из базы
+                sku_data = get_sku_by_article(article)
+                product_name = sku_data[2] if sku_data else f"Товар {article}"
+                
                 result = f'''
                 <a href="https://www.ozon.ru/product/{article}/" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 600;">Товар на Ozon.ru</a><br><br>
-                <strong>Цена на {current_date}:</strong> {price} руб. ({source})<br><br>
+                <strong>Название:</strong> {product_name}<br>
+                <strong>Цена на {current_date}:</strong> {price} руб.<br><br>
                 <small style="color: #64748b;">Цена получена: {created_at}</small><br>
                 <small style="color: #10b981;">Данные из кэша (не обновлялись)</small>
                 '''
@@ -960,7 +965,7 @@ def index():
                 result = f'''
                 <a href="{product_url}" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 600;">Товар на Ozon.ru</a><br><br>
                 <strong>Название:</strong> {product_name}<br>
-                <strong>Цена на {current_date}:</strong> {price} руб. ({source})<br><br>
+                <strong>Цена на {current_date}:</strong> {price} руб.<br><br>
                 <small style="color: #64748b;">Данные сохранены в базу</small><br>
                 <small style="color: #f59e0b;">Цена получена сейчас</small>
                 '''
