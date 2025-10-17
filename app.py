@@ -146,7 +146,7 @@ def try_mobile_version(product_url):
                 price_match = re.search(r'[\d\s,]+', price_text)
                 if price_match:
                     price = price_match.group().strip()
-                    return {"price": f"{price} ₽ (мобильная версия)", "name": product_name, "source": "mobile"}
+                    return {"price": f"{price} руб. (мобильная версия)", "name": product_name, "source": "mobile"}
         
         return {"price": "Цена не найдена в мобильной версии", "name": product_name, "source": "mobile"}
         
@@ -212,7 +212,7 @@ def try_search_method(product_url):
                 price_match = re.search(r'[\d\s,]+', price_text)
                 if price_match:
                     price = price_match.group().strip()
-                    return {"price": f"{price} ₽ (через поиск)", "name": product_name, "source": "search"}
+                    return {"price": f"{price} руб. (через поиск)", "name": product_name, "source": "search"}
         
         return {"price": "Цена не найдена даже через поиск", "name": product_name, "source": "search"}
         
@@ -279,7 +279,7 @@ def try_yandex_market(product_url):
                 price_match = re.search(r'[\d\s,]+', price_text)
                 if price_match:
                     price = price_match.group().strip()
-                    return {"price": f"{price} ₽ (Яндекс.Маркет)", "name": product_name, "source": "yandex"}
+                    return {"price": f"{price} руб. (Яндекс.Маркет)", "name": product_name, "source": "yandex"}
         
         return {"price": "Цена не найдена в Яндекс.Маркете", "name": product_name, "source": "yandex"}
         
@@ -352,7 +352,7 @@ def try_with_proxy(product_url):
                         price_match = re.search(r'[\d\s,]+', price_text)
                         if price_match:
                             price = price_match.group().strip()
-                            return {"price": f"{price} ₽ (через прокси)", "name": product_name, "source": "proxy"}
+                            return {"price": f"{price} руб. (через прокси)", "name": product_name, "source": "proxy"}
                 
             except:
                 continue
@@ -420,7 +420,7 @@ def try_price_aggregator(product_url):
                     price_match = re.search(r'[\d\s,]+', price_text)
                     if price_match:
                         price = price_match.group().strip()
-                        return {"price": f"{price} ₽ (Price.ru)", "name": product_name, "source": "aggregator"}
+                        return {"price": f"{price} руб. (Price.ru)", "name": product_name, "source": "aggregator"}
         
         except:
             pass
@@ -473,7 +473,7 @@ def try_price_aggregator(product_url):
                     price_match = re.search(r'[\d\s,]+', price_text)
                     if price_match:
                         price = price_match.group().strip()
-                        return {"price": f"{price} ₽ (Shop.mail.ru)", "name": product_name, "source": "aggregator"}
+                        return {"price": f"{price} руб. (Shop.mail.ru)", "name": product_name, "source": "aggregator"}
         
         except:
             pass
@@ -771,7 +771,7 @@ def index():
                 
                 result = f'''
                 <a href="https://www.ozon.ru/product/{article}/" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 600;">Товар на Ozon.ru</a><br><br>
-                <strong>Цена на {current_date}:</strong> {price} ₽ ({source})<br><br>
+                <strong>Цена на {current_date}:</strong> {price} руб. ({source})<br><br>
                 <small style="color: #64748b;">Цена получена: {created_at}</small><br>
                 <small style="color: #10b981;">Данные из кэша (не обновлялись)</small>
                 '''
@@ -791,7 +791,7 @@ def index():
                     price = price_match.group(1).strip() if price_match else "Не найдена"
                 else:
                     # Fallback для старого формата
-                    price_match = re.search(r'([\d\s,]+)\s*₽', price_data)
+                    price_match = re.search(r'([\d\s,]+)\s*руб\.', price_data)
                     price = price_match.group(1).strip() if price_match else "Не найдена"
                     product_name = f"Товар {article}"
                     source = "Selenium"
@@ -816,7 +816,7 @@ def index():
                 result = f'''
                 <a href="{product_url}" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 600;">Товар на Ozon.ru</a><br><br>
                 <strong>Название:</strong> {product_name}<br>
-                <strong>Цена на {current_date}:</strong> {price} ₽ ({source})<br><br>
+                <strong>Цена на {current_date}:</strong> {price} руб. ({source})<br><br>
                 <small style="color: #64748b;">Данные сохранены в базу</small><br>
                 <small style="color: #f59e0b;">Цена получена сейчас</small>
                 '''
@@ -969,15 +969,15 @@ def dashboard(article):
                 <div class="stat-label">Записей цен</div>
               </div>
               <div class="stat-card">
-                <div class="stat-value">{min([d['price'] for d in chart_data]) if chart_data else 0} ₽</div>
+                <div class="stat-value">{min([d['price'] for d in chart_data]) if chart_data else 0} руб.</div>
                 <div class="stat-label">Минимальная цена</div>
               </div>
               <div class="stat-card">
-                <div class="stat-value">{max([d['price'] for d in chart_data]) if chart_data else 0} ₽</div>
+                <div class="stat-value">{max([d['price'] for d in chart_data]) if chart_data else 0} руб.</div>
                 <div class="stat-label">Максимальная цена</div>
               </div>
               <div class="stat-card">
-                <div class="stat-value">{math.ceil(sum([d['price'] for d in chart_data]) / len(chart_data)) if chart_data else 0} ₽</div>
+                <div class="stat-value">{math.ceil(sum([d['price'] for d in chart_data]) / len(chart_data)) if chart_data else 0} руб.</div>
                 <div class="stat-label">Средняя цена</div>
               </div>
             </div>
@@ -997,7 +997,7 @@ def dashboard(article):
             data: {{
               labels: chartData.map(d => d.date),
               datasets: [{{
-                label: 'Цена (₽)',
+                label: 'Цена (руб.)',
                 data: chartData.map(d => d.price),
                 borderColor: '#3b82f6',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -1028,7 +1028,7 @@ def dashboard(article):
                   ticks: {{
                     color: '#9ca3af',
                     callback: function(value) {{
-                      return Math.ceil(value) + ' ₽';
+                      return Math.ceil(value) + ' руб.';
                     }},
                     stepSize: 1,
                     precision: 0
@@ -1199,7 +1199,7 @@ def force_update_price_api(article):
     price_result = get_product_price(product_url)
     
     # Извлекаем цену и источник
-    price_match = re.search(r'([\d\s,]+)\s*₽', price_result)
+    price_match = re.search(r'([\d\s,]+)\s*руб\.', price_result)
     price = price_match.group(1).strip() if price_match else "Не найдена"
     
     source_match = re.search(r'\(([^)]+)\)', price_result)
