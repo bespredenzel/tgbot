@@ -1,5 +1,5 @@
 #!/bin/bash
-# Запуск приложения на Railway
+# Запуск приложения на Render
 
 echo "Запуск Price Monitor Bot..."
 

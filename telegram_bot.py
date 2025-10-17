@@ -82,7 +82,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
             # Правильный ответ — показываем кнопку, открывающую приложение Telegram через deep link
             user = update.effective_user
             user_id = str(user.id)  # Получаем ID пользователя
-            app_url = f'https://your-app-name.railway.app/?user_id={user_id}'
+            app_url = f'https://price-monitor-app.onrender.com/?user_id={user_id}'
             
             keyboard = [
                 [InlineKeyboardButton("🚀 Открыть приложение", web_app=WebAppInfo(url=app_url))]
