@@ -16,12 +16,8 @@ app = Flask(__name__)
 def verify_telegram_webapp_data(init_data):
     """Проверяет данные Telegram Web App"""
     try:
-        # Простая проверка наличия данных
         if not init_data:
             return False
-        
-        # В реальном приложении здесь должна быть проверка подписи
-        # Для демонстрации просто проверяем наличие user_id
         return 'user_id' in init_data
     except:
         return False
@@ -29,9 +25,7 @@ def verify_telegram_webapp_data(init_data):
 def get_user_id_from_telegram_data(init_data):
     """Извлекает user_id из данных Telegram Web App"""
     try:
-        # Парсим данные Telegram Web App
         if init_data:
-            # Простое извлечение user_id из строки
             user_match = re.search(r'user_id=(\d+)', init_data)
             if user_match:
                 return user_match.group(1)
@@ -59,7 +53,6 @@ def get_free_proxies():
         proxies = response.text.strip().split('\n')
         return [{'http': f'http://{proxy}', 'https': f'http://{proxy}'} for proxy in proxies[:5]]
     except:
-        # Резервные прокси
         return [
             {'http': 'http://8.8.8.8:8080', 'https': 'http://8.8.8.8:8080'},
             {'http': 'http://1.1.1.1:8080', 'https': 'http://1.1.1.1:8080'}
@@ -68,19 +61,12 @@ def get_free_proxies():
 def get_product_price(product_url):
     """Получает цену товара с Ozon.ru"""
     try:
-        # СНАЧАЛА пробуем Selenium - самый надежный метод
         selenium_result = try_selenium_method(product_url)
         if isinstance(selenium_result, dict) and "₽" in selenium_result.get("price", ""):
             return selenium_result
         
-        # Если Selenium не сработал, пробуем обычные методы
-        # Создаем сессию с более реалистичными настройками
         session = requests.Session()
-        
-        # Случайный User-Agent
         user_agent = get_random_user_agent()
-        
-        # Сначала заходим на главную страницу Ozon для получения cookies
         main_headers = {
             'User-Agent': user_agent,
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -97,7 +83,6 @@ def get_product_price(product_url):
         
         session.headers.update(main_headers)
         
-        # Сначала заходим на главную страницу
         try:
             session.get('https://www.ozon.ru/', timeout=10)
         except:

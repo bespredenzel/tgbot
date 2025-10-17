@@ -5,14 +5,12 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram import WebAppInfo
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
 
-# Настройка логирования
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-# Токен бота (замените на ваш токен от @BotFather)
 BOT_TOKEN = os.getenv("BOT_TOKEN", "8466699669:AAFkayv3f9JQmkNJsrvXV32oFMmkWlIMTCc")
 
 def generate_math_question():
@@ -21,14 +19,12 @@ def generate_math_question():
     b = random.randint(2, 9)
     correct_answer = a * b
     
-    # Создаем неправильные варианты ответов
     wrong_answers = []
     while len(wrong_answers) < 3:
         wrong = correct_answer + random.randint(-10, 10)
         if wrong != correct_answer and wrong > 0 and wrong not in wrong_answers:
             wrong_answers.append(wrong)
     
-    # Смешиваем правильный ответ с неправильными
     all_answers = [correct_answer] + wrong_answers
     random.shuffle(all_answers)
     
@@ -41,11 +37,7 @@ def generate_math_question():
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Обработчик команды /start"""
     user = update.effective_user
-    
-    # Генерируем математический пример
     math_data = generate_math_question()
-    
-    # Сохраняем правильный ответ в контексте
     context.user_data['correct_answer'] = math_data['correct_answer']
     
     # Создаем кнопки с вариантами ответов
