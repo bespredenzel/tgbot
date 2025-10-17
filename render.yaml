@@ -6,6 +6,6 @@ services:
     startCommand: python app.py & python telegram_bot.py
     envVars:
       - key: BOT_TOKEN
-        value: YOUR_BOT_TOKEN_HERE
+        value: 8466699669:AAFkayv3f9JQmkNJsrvXV32oFMmkWlIMTCc
       - key: FLASK_ENV
         value: production
