@@ -1007,7 +1007,7 @@ def index():
                 result = f'''
                 <a href="{product_url}" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 600;">Товар на Ozon.ru</a><br><br>
                 <strong>Название:</strong> {product_name}<br>
-                <strong>Цена на {current_date}:</strong> {price} руб.<br><br>
+                <strong>Цена на {current_date}:</strong> {price}<br><br>
                 <small style="color: #64748b;">Данные сохранены в базу</small><br>
                 <small style="color: #f59e0b;">Цена получена сейчас</small>
                 '''
